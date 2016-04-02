@@ -1,0 +1,46 @@
+import os
+import numpy as np
+
+# kmeans clustering algorithm
+# k= # of clusters (3 : one for each player profile)
+
+# c= # of initial clusters (
+
+
+def kmeans(dataSet, k, c):
+
+	centroids= []
+	centroids=getRandomCentroids(dataSet, centroids, k)
+	oldCentroids = [[] for i in range(k)]
+	numFeatures=dataSet.getNumFeatures()
+	iterations=0
+	oldCentroids=None
+
+	#continue converging dataset points until max iteration
+	while not (shouldStop(oldCentroids, centroids, iterations)):
+		iterations+=1 
+		clusters = [[] for i in range(k)]
+
+		#assign datapoint to cluster type
+
+		oldCentroids=centroids
+
+		labels=getLabels(dataSet,centroids)
+		centroids=getCentroids(dataSet,lables, k)
+
+
+
+	return centroids
+MAX_ITERATIONS=300 
+def shouldStop(oldCentroids, centroids, iterations):
+	if iterations> MAX_ITERATIONS:
+		return True
+		return oldCentroids=centroids
+		iterations++ 
+
+
+def getLabels(dataSet, centroids):
+
+
+def getCentroids(dataSet, labels, k):
+
