@@ -1,10 +1,16 @@
 import os
 import numpy as np
 
-# kmeans clustering algorithm
-# k= # of clusters (3 : one for each player profile)
+import matplotlib.pyplot as plt 
+# 1) randomnly assign 3 centroids
+# 2) add data and determine distance from each data point to closest centroid
+# 3) shift new centroids by averaging data points of each cluster 
+# 4) convergence stops when centroids approach fixed values
 
-# c= # of initial clusters (
+# player 1: Speed Runners; player 2: Achievers; player 3: Killers
+
+# k= # of clusters (3 : one for each player profile)
+# c= # of initial clusters 
 
 
 def kmeans(dataSet, k, c):
