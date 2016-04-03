@@ -13,72 +13,84 @@ import matplotlib.pyplot as plt
 # c= # of initial clusters 
 
 
-def kmeans(dataSet, k):
+class KMeans(Object):
+	"""
+	Defines the Kmeans class for our game server
+	Each point is: [time, coins, murders, level]
+	"""
 
-	centroids= [[] for i in range(k)]
-	labels=["" for i in range(k)]
-	clusters = [[] for i in range(k)]
-	oldCentroids = [[] for i in range(k)]
-	centroids=getRandomCentroids(dataSet, centroids, k)
-	iterations=0
-	oldCentroids=None
-	
-
-# predefine centroid extremes
-
-
-	#continue converging dataset points until max iteration
-	while not (shouldStop(oldCentroids, centroids, iterations)):
-		iterations+=1 
+	def __init__(self):
+		self.labels=['speed', 'achiever', 'killer']
+		self.centroids= [[0.0, 0.0, 0.0, ??], [], []]
+		self.clusters = [[], [], []]
+		self.dataSet = [[], [], []]
 		
+		# predefine centroid extremes
 
-		#assign datapoint to cluster type
-		clusters= distance(dataSet,centroids,clusters)
-		
-		#recalculate centroids as the new mean of each cluster dataset
-		index=0
-		
-		#axis=0 flatten array
-		#redefine means
-		for cluster in clusters:
-			oldCentroids[index]=centroids[index]
-			centroids[index]= map(lambda x:sum(x)/float(len(x)), zip(*dataSet)) 
-			index+=1
+		# Constants
+		self.MAX_ITERATIONS=300
 
-		labels=getLabels(centroids)
-		
+	def put(self, item):
+		"""
+		Put a new entry in the dataSet,
+		Recalculate KMeans
 
-	return centroids
-MAX_ITERATIONS=300 
+		Parameters
+    ----------
+    item : array_like
+    	[time, coins, murders, level]
+		"""
 
-def shouldStop(oldCentroids, centroids, iterations):
+		oldCentroids = [[] for i in range(k)]
+		self.centroids=getRandomCentroids(self.dataSet, centroids, k)
+		iterations=0
+		oldCentroids=None
+		#continue converging dataset points until max iteration
+		while not (shouldStop(oldCentroids, centroids, iterations)):
+			iterations+=1 
+			
+
+			#assign datapoint to cluster type
+			clusters= distance(dataSet,centroids,clusters)
+			
+			#recalculate centroids as the new mean of each cluster dataset
+			index=0
+			
+			#axis=0 flatten array
+			#redefine means
+			for cluster in clusters:
+				oldCentroids[index]=centroids[index]
+				centroids[index]= map(lambda x:sum(x)/float(len(x)), zip(*dataSet)) 
+				index+=1
+
+			labels=getLabels(centroids)
+			
+
+		return centroids
+
+	def __distance(self):
+		for data in dataSet:
+		mu_index=array[]
+		for i in centroids:
+			mu_index.append(sqrt((data-i)**2)) 
+		mu_index= min(mu_index)
+		clusters[mu_index].append(data)
+		return clusters
+		#need to get index
+
+	def __shouldStop(self, oldCentroids, iterations):
 	if iterations> MAX_ITERATIONS:
 		return True
 		return oldCentroids=centroids
 		iterations++ 
 
-def getRandomCentroids(dataSet, centroids, k):
-	for cluster in range(0,k):
-		
-		centroids.append(data[np.random.randint(0, len(data), size=1].flatten(). tolist())
-	return centroids 
+	def __getRandomCentroids(dataSet, centroids, k):
+		for cluster in range(0,k):
+			centroids.append(data[np.random.randint(0, len(data), size=1].flatten(). tolist())
+		return centroids
 
-def distance(dataSet, centroids, clusters):
-	for data in dataSet:
-		mu_index=array[]
-		for i in centroids:
-			mu_index.append(sqrt((data-i)**2)) 
-
-		mu_index= min(mu_index)
-		
-		clusters[mu_index].append(data)
-		
-	return clusters 
-	
-	#need to get index
-
-
-def getLabels(centroids): 
+	def __getLabel(self, index):
+		return self.labels[index] 
 
 	
 
