@@ -28,7 +28,7 @@ def kmeans(dataSet, k, c):
 		clusters = [[] for i in range(k)]
 
 		#assign datapoint to cluster type
-		clusters= distance(data,centroids,clusters)
+		clusters= distance(dataSet,centroids,clusters)
 		
 		#recalculate centroids as the new mean of each cluster dataset
 		index=0
