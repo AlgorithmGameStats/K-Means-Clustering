@@ -67,7 +67,6 @@ class KMeans(object):
 		self.centroids=newCentroids
 	 	self.clusters=newClusters
 
-	 	return label
 	#recalculate centroids as the new mean of each cluster dataset
 
 	def __recalculate(self, cluster):
@@ -78,7 +77,7 @@ class KMeans(object):
 	def __closestcentroid(self, item, centroids):
 
 
-		return min([(i[0], sqrt(((item[0] - centroids[i[0]][0])**2) + ((item[1] - centroids[i[0]][1])**2)) + ((item[2] - centroids[i[0]][2])**2))) for i in enumerate(centroids)], key=lambda t:t[1])[0]
+		return min([(i[0], sqrt(((item[0] - centroids[i[0]][0])**2) + ((item[1] - centroids[i[0]][1])**2)) + ((item[2] - centroids[i[0]][2])**2)) for i in enumerate(centroids)], key=lambda t:t[1])[0]
 
 	def __shouldStop(self, oldCentroids, centroids, iterations):
 		if iterations> self.MAX_ITERATIONS:
