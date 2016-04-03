@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 # 3) shift new centroids by averaging data points of each cluster 
 # 4) convergence stops when centroids approach fixed values (i.e. centroid-data distance minimizes) 
 
-# player 1: Speed Runners; player 2: Achievers; player 3: Killers
+# player 1: Speed Runners(time, level, coins=0, murders=0); player 2: Achievers (coins, levels); player 3: Killers (murders, levels)
 
 # k= # of clusters (3 : one for each player profile)
 # c= # of initial clusters 
 
 
-def kmeans(dataSet, k, c):
+def kmeans(dataSet, k):
 
 	centroids= []
 	centroids=getRandomCentroids(dataSet, centroids, k)
@@ -21,6 +21,10 @@ def kmeans(dataSet, k, c):
 	iterations=0
 	oldCentroids=None
 	counter=0 
+
+
+# predefine centroid extremes
+
 
 	#continue converging dataset points until max iteration
 	while not (shouldStop(oldCentroids, centroids, iterations)):
@@ -32,16 +36,20 @@ def kmeans(dataSet, k, c):
 		
 		#recalculate centroids as the new mean of each cluster dataset
 		index=0
+		
+		#axis=0 flatten array
+		#redefine means
 		for cluster in clusters:
 			oldCentroids[index]=centroids[index]
-			centroids[index]= np.mean(cluster, axis=0).tolist()
+			centroids[index]= map(lambda x:sum(x)/float(len(x)), zip(*dataSet)) 
 			index+=1
 
-		labels=getLabels(dataSet,centroids)
+		labels=getLabels(centroids)
 		
 
 	return centroids
 MAX_ITERATIONS=300 
+
 def shouldStop(oldCentroids, centroids, iterations):
 	if iterations> MAX_ITERATIONS:
 		return True
@@ -50,24 +58,30 @@ def shouldStop(oldCentroids, centroids, iterations):
 
 def getRandomCentroids(dataSet, centroids, k):
 	for cluster in range(0,k):
-	centroids.append(data[np.random.randint(0, len(data), size=1].flatten(). tolist())
+		
+		centroids.append(data[np.random.randint(0, len(data), size=1].flatten(). tolist())
 	return centroids 
 
-def distance(data,centroids,clusters):
-	for d in data:
-	#find closest centroid to datapoint
-	mu_index= min([i[0], np.linalg.norm(d-centroids[i[0]])) \ for i in enumerate(centroids)], key=lambda t:t[1])[0]
-	
-	try:
-		clusters[mu_index].append(instance)
+def distance(dataSet, centroids, clusters):
+	for data in dataSet:
+		mu_index=array[]
+		for i in centroids:
+			mu_index.append(sqrt((data-i)**2)) 
+
+		mu_index= min(mu_index)
 		
-	except KeyError:
-	
-		clusters[mu_index]= [d]
+		clusters[mu_index].append(data)
 		
 	return clusters 
 	
-def getLabels(dataSet, centroids):
+	#need to get index
+
+
+def getLabels(centroids): 
+
+	for i in centroids:
+
+
 
 
 
