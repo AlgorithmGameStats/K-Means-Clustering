@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # 3) shift new centroids by averaging data points of each cluster 
 # 4) convergence stops when centroids approach fixed values (i.e. centroid-data distance minimizes) 
 
-# player 1: Speed Runners(time, level, coins=0, murders=0); player 2: Achievers (coins, levels); player 3: Killers (murders, levels)
+# player 1: Speed Runners(time=0, level=all levels, coins=0, murders=0); player 2: Achievers (coins=~, levels, time=~, murders=0); player 3: Killers (murders=~, levels, time=~, coins=0)
 
 # k= # of clusters (3 : one for each player profile)
 # c= # of initial clusters 
@@ -15,13 +15,14 @@ import matplotlib.pyplot as plt
 
 def kmeans(dataSet, k):
 
-	centroids= []
-	centroids=getRandomCentroids(dataSet, centroids, k)
+	centroids= [[] for i in range(k)]
+	labels=["" for i in range(k)]
+	clusters = [[] for i in range(k)]
 	oldCentroids = [[] for i in range(k)]
+	centroids=getRandomCentroids(dataSet, centroids, k)
 	iterations=0
 	oldCentroids=None
-	counter=0 
-
+	
 
 # predefine centroid extremes
 
@@ -29,7 +30,7 @@ def kmeans(dataSet, k):
 	#continue converging dataset points until max iteration
 	while not (shouldStop(oldCentroids, centroids, iterations)):
 		iterations+=1 
-		clusters = [[] for i in range(k)]
+		
 
 		#assign datapoint to cluster type
 		clusters= distance(dataSet,centroids,clusters)
@@ -79,7 +80,7 @@ def distance(dataSet, centroids, clusters):
 
 def getLabels(centroids): 
 
-	for i in centroids:
+	
 
 
 
