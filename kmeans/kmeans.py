@@ -1,9 +1,5 @@
-import os
-
-import itertools
-
+import os, itertools, random
 from math import sqrt
-import random
 
 # 1) randomnly assign 3 centroids
 # 2) add data and determine distance from each data point to closest centroid
@@ -20,79 +16,100 @@ class KMeans(object):
 	"""
 	Defines the Kmeans class for our game server
 	Each point is: [time, coins, murders]
+	'time' == time take to beat stage
+	'coins' == percentage of coins collected in stage
+	'murders' == number of cubes killed on the stage
 	"""
 
-	def __init__(self, class_name, k=1):
-		self.labels=['speed', 'achiever', 'killer']
-		# predefine centroid extremes
-		self.centroids= self.__randomcentroid(k)
-		self.clusters = [[] for i in range(k)]
+	def __init__(self, class_name, k=1, max_iterations=300):
+		
+		# predefine random centroids
+		self.centroids = self.__random_centroid(k)
+		
+		# predefine empty clusters
+		self.clusters = [ [] for i in range(k) ]
+		
+		# Store k-means variables and constants
+		self.__class_name = class_name
+		self.__k = k
+		self.__max_iterations = max_iterations
 
-		self.class_name=class_name
-		self.k=k 
-		# Constants
-		self.MAX_ITERATIONS=300
 
 	def put(self, items):
 		"""
-		Put a new entry in the dataSet,
+		Put new entries in the dataSet,
 		Recalculate KMeans
 
 		Parameters
    		----------
     	items : array_ofarrays
-    		[items]
-    		item=[time, coins, murders]
+    		[item, item, item, ....]
+    		item == [time, coins, murders]
 		"""
-		# Add item to a cluster before we begin
-		self.clusters[self.k-1].extend(items)
 
+		# Add item to the last cluster before we begin
+		self.clusters[self.__k-1].extend(items)
 
-		oldCentroids=[[] for i in range(self.k)]
-		newCentroids = self.__randomcentroid(self.k)
-		newClusters=[[] for i in range(self.k)]
-		iterations=0
+		# Create list of old/new centroids and clusters before re-calculation
+		old_centroids = [ [] for i in range(self.__k) ]
+		new_centroids = self.__random_centroid(self.__k)
+		new_clusters = [ [] for i in range(self.__k) ]
+
+		# Keep track of iterations of moving centroids
+		iterations = 0
 		
-		#continue converging dataset points until max iteration
-		while not (self.__shouldStop(oldCentroids, newCentroids, iterations)):
-			iterations+=1 
-			newClusters=[[] for i in range(self.k)]
-			oldCentroids=newCentroids[:]	#copies old centroids into new centroids
-			dataSet=itertools.chain(*(self.clusters[i] for i in range(self.k)))
- 
+		# Continue converging data points until __max_iterations is reached
+		while not (self.__should_stop(old_centroids, new_centroids, iterations)):
+			iterations += 1 # increase iterations count
+			new_clusters = [ [] for i in range(self.__k) ] # Empty the 'new_clusters' for this iteration
+			old_centroids = new_centroids[:]	# Copies new_centroids into old_centroids
+
+			# chain together all clusters (old ones) instead of copying, 
+			# this way we don't waste soo much memory
+			data_set = itertools.chain( *(self.clusters[i] for i in range(self.__k)) )
 			
-			for item in dataSet:
+			# For each item in the data_set, we: 
+			# 1) find the closest centroid to the data item
+			# 2) add data item to the cluster it belongs to
+			# 3) recalculate the centroid for that cluster
+			for item in data_set:
+				centroid_index = self.__closest_centroid(item, new_centroids) 
+				new_clusters[centroid_index].append(item)
+				new_centroids[centroid_index] = self.__recalculate(new_clusters[centroid_index])
+		
+		# Once we have converged (or reached max_iterations)
+		# Re-assign centroids and clusters to the new values
+		self.centroids = new_centroids
+	 	self.clusters = new_clusters
 
-				centroid_index= self.__closestcentroid(item, newCentroids) 
-				newClusters[centroid_index].append(item)
-				newCentroids[centroid_index]=self.__recalculate(newClusters[centroid_index])
 
-
-		self.centroids=newCentroids
-	 	self.clusters=newClusters
-
-	#recalculate centroids as the new mean of each cluster dataset
-
-
-	def __randomcentroid(self, k):
+	def __random_centroid(self, k):
+		"""
+		Generate a list of 'k' random centroids
+		"""
 		return [[random.uniform(0, 200), random.uniform(0, 1), random.uniform(0, 25)] for i in range(k)]
 
 
 	def __recalculate(self, cluster):
-
+		"""
+		Recalculate centroid as the new mean of the cluster
+		"""
 		return map(lambda x:sum(x)/float(len(x)), zip(*cluster))
 
 
-	def __closestcentroid(self, item, centroids):
-
-
-
+	def __closest_centroid(self, item, centroids):
+		"""
+		Return the index of the centroid the 'item' is closer too
+		"""
 		return min([(i[0], sqrt(((item[0] - centroids[i[0]][0])**2) + ((item[1] - centroids[i[0]][1])**2)) + ((item[2] - centroids[i[0]][2])**2)) for i in enumerate(centroids)], key=lambda t:t[1])[0]
 
-	def __shouldStop(self, oldCentroids, centroids, iterations):
-		if iterations> self.MAX_ITERATIONS:
+	def __should_stop(self, old_centroids, centroids, iterations):
+		"""
+		Verify if we should stop recalculating centroids
+		"""
+		if iterations > self.__max_iterations:
 			return True
-		return oldCentroids==centroids
+		return old_centroids == centroids
 
 
 	
