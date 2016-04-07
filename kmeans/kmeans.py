@@ -21,6 +21,7 @@ class KMeans(object):
 	'murders' == number of cubes killed on the stage
 	"""
 
+
 	def __init__(self, class_name, k=1, max_iterations=300):
 		
 		# predefine random centroids
@@ -82,6 +83,11 @@ class KMeans(object):
 		self.centroids = new_centroids
 	 	self.clusters = new_clusters
 
+		#calculate dot product of each item to each centroid 
+	def dot_product(self, item, centroids)
+
+		return sum( [ for i in range (len(self.item)) for j in range(len(self.centroids)) item[i][0]*self.centroids[j][0] ]) 
+
 
 	def __random_centroid(self, k):
 		"""
@@ -99,7 +105,7 @@ class KMeans(object):
 
 	def __closest_centroid(self, item, centroids):
 		"""
-		Return the index of the centroid the 'item' is closer too
+		Return the index of the centroid the 'item' is closer to
 		"""
 		return min([(i[0], sqrt(((item[0] - centroids[i[0]][0])**2) + ((item[1] - centroids[i[0]][1])**2)) + ((item[2] - centroids[i[0]][2])**2)) for i in enumerate(centroids)], key=lambda t:t[1])[0]
 
@@ -110,8 +116,6 @@ class KMeans(object):
 		if iterations > self.__max_iterations:
 			return True
 		return old_centroids == centroids
-
-
 	
 
 		return profile
