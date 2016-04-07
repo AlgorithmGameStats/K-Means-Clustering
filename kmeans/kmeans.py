@@ -83,11 +83,6 @@ class KMeans(object):
 		self.centroids = new_centroids
 	 	self.clusters = new_clusters
 
-		#calculate dot product of each item to each centroid 
-	def dot_product(self, item, centroids)
-
-		return sum( [ for i in range (len(self.item)) for j in range(len(self.centroids)) item[i][0]*self.centroids[j][0] ]) 
-
 
 	def __random_centroid(self, k):
 		"""
@@ -116,6 +111,11 @@ class KMeans(object):
 		if iterations > self.__max_iterations:
 			return True
 		return old_centroids == centroids
-	
-
 		return profile
+
+
+		#calculate dot product of each item to each centroid 
+	def dot_product(self, item, centroids):
+
+		return sum( [ item[i][0]* self.centroids[j][0] for i in range (len(self.item)) for j in range(len(self.centroids))  ]) 
+
