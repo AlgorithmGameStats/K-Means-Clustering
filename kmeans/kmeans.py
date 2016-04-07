@@ -3,6 +3,7 @@ import os
 import itertools
 
 from math import sqrt
+import random
 
 # 1) randomnly assign 3 centroids
 # 2) add data and determine distance from each data point to closest centroid
@@ -21,13 +22,14 @@ class KMeans(object):
 	Each point is: [time, coins, murders]
 	"""
 
-	def __init__(self, level):
+	def __init__(self, class_name, k=1):
 		self.labels=['speed', 'achiever', 'killer']
 		# predefine centroid extremes
-		self.centroids= [[0.0, 0.0, 0.0], [1000.0, 1000.0, 0.0], [1000.0, 0.0, 1000.0]]
-		self.clusters = [[], [], []]
-		self.current_level=level 
+		self.centroids= self.__randomcentroid(k)
+		self.clusters = [[] for i in range(k)]
 
+		self.class_name=class_name
+		self.k=k 
 		# Constants
 		self.MAX_ITERATIONS=300
 
@@ -43,20 +45,22 @@ class KMeans(object):
     		item=[time, coins, murders]
 		"""
 		# Add item to a cluster before we begin
-		self.clusters[2].extend(items)
+		self.clusters[self.k-1].extend(items)
 
 
-		oldCentroids=[[], [], []]
-		newCentroids = [[0.0, 0.0, 0.0], [1000.0, 1000.0, 0.0], [1000.0, 0.0, 1000.0]]
-		newClusters=[[], [], []]
+		oldCentroids=[[] for i in range(self.k)]
+		newCentroids = self.__randomcentroid(self.k)
+		newClusters=[[] for i in range(self.k)]
 		iterations=0
 		
 		#continue converging dataset points until max iteration
 		while not (self.__shouldStop(oldCentroids, newCentroids, iterations)):
 			iterations+=1 
-			newClusters=[[], [], []]
+			newClusters=[[] for i in range(self.k)]
 			oldCentroids=newCentroids[:]	#copies old centroids into new centroids
-			dataSet=itertools.chain(self.clusters[0], self.clusters[1], self.clusters[2])
+			dataSet=itertools.chain(*(self.clusters[i] for i in range(self.k)))
+ 
+			
 			for item in dataSet:
 
 				centroid_index= self.__closestcentroid(item, newCentroids) 
@@ -69,12 +73,18 @@ class KMeans(object):
 
 	#recalculate centroids as the new mean of each cluster dataset
 
+
+	def __randomcentroid(self, k):
+		return [[random.uniform(0, 200), random.uniform(0, 1), random.uniform(0, 25)] for i in range(k)]
+
+
 	def __recalculate(self, cluster):
 
 		return map(lambda x:sum(x)/float(len(x)), zip(*cluster))
 
 
 	def __closestcentroid(self, item, centroids):
+
 
 
 		return min([(i[0], sqrt(((item[0] - centroids[i[0]][0])**2) + ((item[1] - centroids[i[0]][1])**2)) + ((item[2] - centroids[i[0]][2])**2)) for i in enumerate(centroids)], key=lambda t:t[1])[0]
@@ -85,13 +95,6 @@ class KMeans(object):
 		return oldCentroids==centroids
 
 
-	def __getLabel(self, index):
-		return self.labels[index] 
-
-
-	def getlabel(self,item):
-
-		index=self.__closestcentroid(item, self.centroids)
-		profile= self.__getlabel(index) 
+	
 
 		return profile
