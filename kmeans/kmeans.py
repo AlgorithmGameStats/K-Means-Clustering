@@ -114,11 +114,6 @@ class KMeans(object):
 		return profile
 
 
-		#calculate dot product of each item to each centroid 
-		#calculate the dot product per centroid 
-
 	def dot_product(self, item):
-
-		for j in range(len(self.centroids)):
-			print sum( [ item[i]* self.centroids[j][0] for i in range (len(item))]) 
+		return [ sum([item[i] * self.centroids[j][i] for i in range(len(item))]) for j in range(len(self.centroids))]
 
