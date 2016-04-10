@@ -117,3 +117,15 @@ class KMeans(object):
 	def dot_product(self, item):
 		return [ sum([item[i] * self.centroids[j][i] for i in range(len(item))]) for j in range(len(self.centroids))]
 
+	def k(self):
+		"""
+		Return the value of 'k'
+		"""
+		return self.__k
+
+	def class_name(self):
+		"""
+		Return the value of class_name
+		"""
+		return self.__class_name
+
