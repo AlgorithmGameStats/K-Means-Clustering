@@ -88,7 +88,7 @@ class KMeans(object):
 		"""
 		Generate a list of 'k' random centroids
 		"""
-		return [[random.uniform(0, 200), random.uniform(0, 1), random.uniform(0, 25)] for i in range(k)]
+		return [[random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)] for i in range(k)]
 
 
 	def __recalculate(self, cluster):
