@@ -1,4 +1,4 @@
-import os, itertools, random
+import os, itertools, random, time
 from math import sqrt
 
 # 1) randomnly assign 3 centroids
@@ -22,18 +22,21 @@ class KMeans(object):
 	"""
 
 
-	def __init__(self, class_name, k=1, max_iterations=300):
-		
-		# predefine random centroids
-		self.centroids = self.__random_centroid(k)
-		
-		# predefine empty clusters
-		self.clusters = [ [] for i in range(k) ]
+	def __init__(self, class_name, k=1, max_iterations=300, log=False):
 		
 		# Store k-means variables and constants
 		self.__class_name = class_name
 		self.__k = k
 		self.__max_iterations = max_iterations
+		self.__log_enabled = log
+
+		# predefine random centroids
+		start = time.clock()
+		self.centroids = self.__random_centroid(k)
+		self.__log ( 'Initial random centroids generation Time: {0}'.format( (time.clock() - start) ) )
+
+		# predefine empty clusters
+		self.clusters = [ [] for i in range(k) ]
 
 
 	def put(self, items):
@@ -49,40 +52,61 @@ class KMeans(object):
 		"""
 
 		# Add item to the last cluster before we begin
+		start = time.clock()
 		self.clusters[self.__k-1].extend(items)
-
+		self.__log ( 'Adding new data Time: {0}'.format( (time.clock() - start) ) )
+		
 		# Create list of old/new centroids and clusters before re-calculation
+		start = time.clock()
 		old_centroids = [ [] for i in range(self.__k) ]
 		new_centroids = self.__random_centroid(self.__k)
 		new_clusters = [ [] for i in range(self.__k) ]
-
+		self.__log ( 'New temp centroids and clusters generation Time: {0}'.format( (time.clock() - start) ) )
+		
 		# Keep track of iterations of moving centroids
 		iterations = 0
-		
+		calc_times = list()
+
 		# Continue converging data points until __max_iterations is reached
+		self.__log ("*********************************")
 		while not (self.__should_stop(old_centroids, new_centroids, iterations)):
 			iterations += 1 # increase iterations count
+			self.__log("Iteration: {0}".format(iterations))
+			start = time.clock()
 			new_clusters = [ [] for i in range(self.__k) ] # Empty the 'new_clusters' for this iteration
 			old_centroids = new_centroids[:]	# Copies new_centroids into old_centroids
+			self.__log ( 'Copy new centroids to old centroids Time: {0}'.format( (time.clock() - start) ) )
 
 			# chain together all clusters (old ones) instead of copying, 
 			# this way we don't waste soo much memory
+			start = time.clock()
 			data_set = itertools.chain( *(self.clusters[i] for i in range(self.__k)) )
+			self.__log ( 'Chaining data set Time: {0}'.format( (time.clock() - start) ) )
 			
 			# For each item in the data_set, we: 
 			# 1) find the closest centroid to the data item
 			# 2) add data item to the cluster it belongs to
 			# 3) recalculate the centroid for that cluster
+			start = time.clock()
 			for item in data_set:
 				centroid_index = self.__closest_centroid(item, new_centroids) 
 				new_clusters[centroid_index].append(item)
 				new_centroids[centroid_index] = self.__recalculate(new_clusters[centroid_index])
+			calc_time = (time.clock() - start)
+			calc_times.append(calc_time)
+			self.__log ( 'New centroids calculation Time: {0}'.format( calc_time ) )
+			self.__log ( '~~~~ centroids ~~~~')
+			self.__log ('Old: {0}'.format(old_centroids))
+			self.__log ('New: {0}'.format(new_centroids))
+			self.__log ( '~~~~~~~~~~~~~~~~~~~')
+			self.__log ("+++++++++++++++++++++++++++++++++")
 		
 		# Once we have converged (or reached max_iterations)
 		# Re-assign centroids and clusters to the new values
 		self.centroids = new_centroids
 	 	self.clusters = new_clusters
-
+	 	self.__log ( 'Total calculation Time: {0}'.format( sum(calc_times) ) )
+	 	self.__log ("*********************************")
 
 	def __random_centroid(self, k):
 		"""
@@ -111,8 +135,6 @@ class KMeans(object):
 		if iterations > self.__max_iterations:
 			return True
 		return old_centroids == centroids
-		return profile
-
 
 	def dot_product(self, item):
 		return [ sum([item[i] * self.centroids[j][i] for i in range(len(item))]) for j in range(len(self.centroids))]
@@ -129,3 +151,7 @@ class KMeans(object):
 		"""
 		return self.__class_name
 
+	# Logging Helper function
+	def __log(self, txt):
+		if self.__log_enabled:
+			print(txt)
