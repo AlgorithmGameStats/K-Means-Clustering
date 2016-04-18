@@ -41,6 +41,8 @@ class KMeans(object):
 		# predefine empty clusters
 		self.clusters = [ [] for i in range(k) ]
 
+		# predefine empty labels
+		self.labels = [ '' for i in range(k) ]
 
 	def put(self, items):
 		"""
