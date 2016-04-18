@@ -23,7 +23,7 @@ if __name__ == '__main__':
   no_points = args.n
 
   with open('./trials/time.{0}.{1}.{2}.csv'.format(args.n, args.k, args.t), 'wb') as f:
-    f.write('data size,trial,kmeans time (s)\n')
+    f.write('data size,k,trial,kmeans time (s)\n')
     for trial in xrange(1, args.t + 1):
       # KMeans Object
       k = KMeans(class_name="test", k=args.k, log=args.log, max_iterations=args.c)
