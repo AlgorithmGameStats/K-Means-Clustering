@@ -1,3 +1,6 @@
+"""
+Class implementing KMeans for our Game Server
+"""
 import os, itertools, random, time
 from math import sqrt
 
