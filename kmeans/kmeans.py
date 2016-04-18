@@ -58,7 +58,7 @@ class KMeans(object):
 
 		# Add item to the last cluster before we begin
 		start = time.clock()
-		self.clusters[self.__k-1].extend(items)
+		self.clusters[self.__k-1] += items
 		self.__log ( 'Adding new data Time: {0}'.format( (time.clock() - start) ) )
 		
 		# Create list of old/new centroids and clusters before re-calculation
@@ -93,12 +93,24 @@ class KMeans(object):
 			# 2) add data item to the cluster it belongs to
 			# 3) recalculate the centroid for that cluster
 			start = time.clock()
+			c_time = 0
+			r_time = 0
 			for item in data_set:
-				centroid_index = self.__closest_centroid(item, new_centroids) 
+				temp = time.clock()
+				centroid_index = self.__closest_centroid(item, new_centroids)
+				c_time += (time.clock() - temp) 
 				new_clusters[centroid_index].append(item)
+
+			# Recalculate all centroids
+			for centroid_index in range(self.__k):
+				temp = time.clock()
 				new_centroids[centroid_index] = self.__recalculate(new_clusters[centroid_index])
+				r_time += (time.clock() - temp) 
+
 			calc_time = (time.clock() - start)
 			calc_times.append(calc_time)
+			self.__log ( 'Closest centroid Time: {0}'.format( c_time ) )
+			self.__log ( 'Recalculating centroids Time: {0}'.format( r_time ) )
 			self.__log ( 'New centroids calculation Time: {0}'.format( calc_time ) )
 			self.__log ( '~~~~ centroids ~~~~')
 			self.__log ('Old: {0}'.format(old_centroids))
@@ -124,7 +136,9 @@ class KMeans(object):
 		"""
 		Recalculate centroid as the new mean of the cluster
 		"""
-		return map(lambda x:sum(x)/float(len(x)), zip(*cluster))
+		return map(
+			lambda x:sum(x)/float(len(x)), zip(*cluster)
+			)
 
 
 	def __closest_centroid(self, item, centroids):

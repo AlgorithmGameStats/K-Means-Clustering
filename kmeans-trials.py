@@ -29,13 +29,13 @@ if __name__ == '__main__':
       k = KMeans(class_name="test", k=args.k, log=args.log, max_iterations=args.c)
 
       # Generate Data
-      data = list()
-      for i in range(no_points):
-        data.append( [
+      data = [ 
+        [
           random.uniform(0.0, 1.0), # time
           random.uniform(0.0, 1.5), # coins, can be up to 1.5 the ammount of coins
-          random.uniform(0.0, 1.0) # kills
-        ] )
+          random.uniform(0.0, 1.0)  # kills
+        ] for i in range(no_points)
+      ]
 
       # Inster data (this forces KMeans calculation)
       start = time.clock()
